@@ -18,7 +18,7 @@
 /*-----------------GLOBAL-------------------*/
 static int	debug = 4;			// This global variable can be set with command line arguments when you insmod
 
-/*----------------PROTOTYPES----------------*/
+/*---------------DECLARATIONS---------------*/
 static int hello_init(void);
 static void hello_exit(void);
 
