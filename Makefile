@@ -5,6 +5,7 @@
 
 TARGET:= hello
 PWD:= $(shell pwd)
+EXTRA_CFLAGS:=-Wno-error
 KERNDIR:= "/lib/modules/$(shell uname -r)/build/"
 
 obj-m:= ${TARGET}.o
