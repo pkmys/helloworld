@@ -50,7 +50,7 @@ module_init(hello_init);
  *this module is nott mandatory for */
 module_exit(hello_exit);
 /*This is the documentation part, after doing insmod of the module 
- *you can find details about this module by using "modinfo hello" */
+ *you can find details about this module by using "modinfo hello.ko" */
 
 MODULE_LICENSE("Dual BSD/GPL");			// for getting rid of kernel taint warning
 MODULE_AUTHOR(MOD_AUTHOR);		// name of the module author
