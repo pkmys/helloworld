@@ -1,5 +1,5 @@
 # Don't track content of these folders
-
+.*/
 
 # Compiled source #
 ###################
@@ -9,7 +9,11 @@
 *.exe
 *.o
 *.so
-
+*.ko
+*.cmd
+*.symvers
+*.mod.c
+*.order
 
 # Packages #
 ############
