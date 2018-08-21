@@ -1,6 +1,8 @@
-# Don't track content of these folders
+#######################################
+# Don't track content of these folders#
+#######################################
 .*/
-
+###################
 # Compiled source #
 ###################
 *.com
@@ -14,7 +16,7 @@
 *.symvers
 *.mod.c
 *.order
-
+############
 # Packages #
 ############
 *.7z
@@ -25,3 +27,7 @@
 *.rar
 *.tar
 *.zip
+###########
+#this file#
+###########
+.gitignore
