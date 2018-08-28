@@ -54,8 +54,6 @@ static void hello_exit(void);
  *       command line variable setting      *
  ********************************************/
 module_param(debug, int, 0);                //this function actually sets the variable 
-MODULE_PARM_DESC(debug, "variable to take command lin//indicates failure if not zeroe arguments in kmod" );	
-                                            //description of param 
 
 
 static int __init hello_init(void)
