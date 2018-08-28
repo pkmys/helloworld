@@ -16,6 +16,7 @@
 *.symvers
 *.mod.c
 *.order
+user-driver
 ############
 # Packages #
 ############
