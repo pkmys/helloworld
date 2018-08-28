@@ -3,7 +3,7 @@
 # PWD 	 = present working directory
 # KERNDIR= kernel source directory
 
-TARGET:= hello
+TARGET:= kernel-test-driver
 PWD:= $(shell pwd)
 EXTRA_CFLAGS:=-Wno-error
 KERNDIR:= "/lib/modules/$(shell uname -r)/build/"
