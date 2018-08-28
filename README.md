@@ -1,8 +1,8 @@
-# helloworld
+# Character device
 
-My hello world repository 
+Test device module
     
     * This is the demonstration for writing primitive kernel space program
     
-    * I have created simple module which can be inserted in kernel and 
-      displays hello world message upon insertion in kernel log.
+    * Implementation of test device to perform operations like read, write
+      between user and karnel space for this module.
