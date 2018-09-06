@@ -28,7 +28,7 @@ int main(){
 
    printf("Starting device test code example...\n");
 
-   fd = open("/dev/testdev", O_RDWR);             // Open the device with read/write access
+   fd = open("/home/saurav/testdev", O_RDWR);             // Open the device with read/write access
    if (fd < 0){
       perror("Failed to open the device...");
       return errno;
@@ -48,7 +48,7 @@ int main(){
    getchar();
  
    printf("Reading from the device...\n");
-   ret = read(fd, receive, BUFFER_LENGTH);        // Read the response from the LKM
+   ret = read(fd, stringToSend, BUFFER_LENGTH);       // Read the response from the LKM
    if (ret < 0){
       perror("Failed to read the message from the device.");
       return errno;

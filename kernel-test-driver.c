@@ -20,6 +20,7 @@
 #include <linux/device.h>       // Header to support the kernel Driver Model
 #include <linux/fs.h>           // Header for the Linux file system support
 #include <linux/uaccess.h>      // Required for the copy to user function
+#include <linux/string.h>
 
 
 /*******************************************
@@ -42,11 +43,11 @@ MODULE_SUPPORTED_DEVICE(MOD_SUPPORT);   // devices this module uses
  *                 global                  *
  *******************************************/
 static int    majorNumber;                  // Stores the device number -- determined automatically
-static char   message[256] = {0};           // Memory for the string that is passed from userspace
+//static char*   message;           // Memory for the string that is passed from userspace
 static short  size_of_message;              // Used to remember the size of the string stored
 static int    numberOpens = 0;              // Counts the number of times the device is opened
-static struct class*  testdevClass  = NULL; // The device-driver class struct pointer
-static struct device* testdevDevice = NULL; // The device-driver device struct pointer
+//static struct class*  testdevClass  = NULL; // The device-driver class struct pointer
+//static struct device* testdevDevice = NULL; // The device-driver device struct pointer
 
 
 /********************************************
@@ -93,7 +94,7 @@ static int __init testdev_init(void)
 	}
 
 	printk(KERN_INFO "%d %s: testdev: registered correctly with major number %d\n",__LINE__, __func__, majorNumber);
-
+/*
    	// Register the device class
    	testdevClass = class_create(THIS_MODULE, CLASS_NAME);
    	if (IS_ERR(testdevClass)){                // Check for error and clean up if there is
@@ -116,7 +117,7 @@ static int __init testdev_init(void)
    	}
 
    	printk(KERN_INFO "%d %s: testdev: device class created correctly\n",__LINE__, __func__); // Made it! device was initialized
-
+*/
 	return 0;					//indicates failure if not zero
 }
 
@@ -126,10 +127,10 @@ static int __init testdev_init(void)
  */
 static void __exit testdev_exit(void)
 {
-	device_destroy(testdevClass, MKDEV(majorNumber, 0));     // remove the device
-   	class_unregister(testdevClass);                          // unregister the device class
-   	class_destroy(testdevClass);                             // remove the device class
-   	unregister_chrdev(majorNumber, DEVICE_NAME);             // unregister the major number
+	//device_destroy(testdevClass, MKDEV(majorNumber, 0));     // remove the device
+   	//class_unregister(testdevClass);                          // unregister the device class
+   	//class_destroy(testdevClass);                             // remove the device class
+   	//unregister_chrdev(majorNumber, DEVICE_NAME);             // unregister the major number
 
 	printk(KERN_INFO "%d %s: testdev: driver deregistrartion success\n",__LINE__,__func__);
 }
@@ -161,7 +162,7 @@ static int dev_open(struct inode *inodep, struct file *filep){
 static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset){
    	int error_count = 0;
    	// copy_to_user has the format ( * to, *from, size) and returns 0 on success
-   	error_count = copy_to_user(buffer, message, size_of_message);
+   	error_count = copy_to_user(buffer, "hello", 5);
 
    	if (error_count==0){                 // if true then have success
       		printk(KERN_INFO "%d %s: testdev: sent %d characters to the user\n",__LINE__,__func__, size_of_message);
@@ -186,8 +187,9 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  */
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset){
 
-   	sprintf(message, "%s(%zu letters)", buffer, len);   // appending received string with its length
-   	size_of_message = strlen(message);                  // store the length of the stored message
+   	printk("message=%s\n",buffer);
+										    // appending received string with its length
+   	size_of_message = len;                  // store the length of the stored message
 
    	printk(KERN_INFO "%d %s: testdev: received %zu characters from the user\n",__LINE__,__func__, len);
    
