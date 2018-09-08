@@ -161,8 +161,6 @@ static int dev_open(struct inode *inodep, struct file *filep){
  */
 static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset){
    	int error_count = 0;
-   	// copy_to_user has the format ( * to, *from, size) and returns 0 on success
-   	error_count = copy_to_user(buffer, "hello", 5);
 
    	if (error_count==0){                 // if true then have success
       		printk(KERN_INFO "%d %s: testdev: sent %d characters to the user\n",__LINE__,__func__, size_of_message);
@@ -186,10 +184,6 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  * @param offset The offset if required
  */
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset){
-
-   	printk("message=%s\n",buffer);
-										    // appending received string with its length
-   	size_of_message = len;                  // store the length of the stored message
 
    	printk(KERN_INFO "%d %s: testdev: received %zu characters from the user\n",__LINE__,__func__, len);
    
