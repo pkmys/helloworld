@@ -17,3 +17,4 @@ all:
 
 clean:
 	make -C ${KERNDIR} M=${PWD}  clean
+	rm -f user-driver

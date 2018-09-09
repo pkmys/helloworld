@@ -42,8 +42,8 @@ MODULE_SUPPORTED_DEVICE(MOD_SUPPORT);   // devices this module uses
 /*******************************************
  *                 global                  *
  *******************************************/
-static int    majorNumber;                  // Stores the device number -- determined automatically
-//static char*   message;           // Memory for the string that is passed from userspace
+static int    majorNumber = 241;                  // Stores the device number -- determined automatically
+static char   message[1024];           // Memory for the string that is passed from userspace
 static short  size_of_message;              // Used to remember the size of the string stored
 static int    numberOpens = 0;              // Counts the number of times the device is opened
 //static struct class*  testdevClass  = NULL; // The device-driver class struct pointer
@@ -68,6 +68,7 @@ static ssize_t dev_write(struct file *, const char *, size_t, loff_t *);
  */
 static struct file_operations fops =
 {
+   .owner = THIS_MODULE,
    .open = dev_open,
    .read = dev_read,
    .write = dev_write,
@@ -83,14 +84,14 @@ static struct file_operations fops =
  */
 static int __init testdev_init(void)
 {
+	int8_t ret;
 	printk(KERN_INFO "%d %s: Initializing test driver...\n",__LINE__,__func__);
-
 	// Try to dynamically allocate a major number for the device 
-    	majorNumber = register_chrdev(0, DEVICE_NAME, &fops);   
-	if (majorNumber<0){
+    	ret = register_chrdev(majorNumber, DEVICE_NAME, &fops);   
+	if (ret<0){
     		printk(KERN_ALERT "%d %s: testdev: failed to register a major number\n",__LINE__,__func__);
 		
-		return majorNumber;
+		return ret;
 	}
 
 	printk(KERN_INFO "%d %s: testdev: registered correctly with major number %d\n",__LINE__, __func__, majorNumber);
@@ -130,8 +131,8 @@ static void __exit testdev_exit(void)
 	//device_destroy(testdevClass, MKDEV(majorNumber, 0));     // remove the device
    	//class_unregister(testdevClass);                          // unregister the device class
    	//class_destroy(testdevClass);                             // remove the device class
-   	//unregister_chrdev(majorNumber, DEVICE_NAME);             // unregister the major number
-
+   	unregister_chrdev(majorNumber, DEVICE_NAME);               // unregister the major number
+	
 	printk(KERN_INFO "%d %s: testdev: driver deregistrartion success\n",__LINE__,__func__);
 }
 
@@ -161,17 +162,21 @@ static int dev_open(struct inode *inodep, struct file *filep){
  */
 static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *offset){
    	int error_count = 0;
+	   
+	printk("temp is %s size is %d", message, size_of_message);
+	error_count = copy_to_user(buffer, &message, size_of_message);
 
    	if (error_count==0){                 // if true then have success
       		printk(KERN_INFO "%d %s: testdev: sent %d characters to the user\n",__LINE__,__func__, size_of_message);
-      
-		return (size_of_message=0);  // clear the position to the start and return 0
+			size_of_message=0;    // clear the position to the start and return 0  
    	}else {
 
       		printk(KERN_INFO "%d %s: testdev: failed to send %d characters to the user\n",__LINE__,__func__, error_count);
       	
 	return -EFAULT;                      // Failed -- return a bad address message (i.e. -14)
    	}
+
+return size_of_message;
 }
 
 
@@ -185,6 +190,8 @@ static ssize_t dev_read(struct file *filep, char *buffer, size_t len, loff_t *of
  */
 static ssize_t dev_write(struct file *filep, const char *buffer, size_t len, loff_t *offset){
 
+	size_of_message = len;
+	copy_from_user(message, buffer, len);
    	printk(KERN_INFO "%d %s: testdev: received %zu characters from the user\n",__LINE__,__func__, len);
    
 	return len;
