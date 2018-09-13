@@ -22,9 +22,10 @@
 #include <unistd.h>
 #include <fcntl.h>
 
+#define MAJOR_NUMBER 240
 #define BUFFER_LENGTH 256               // The buffer length (crude but fine) 
-#define WR_VALUE _IOW('a','a',int32_t*)
-#define RD_VALUE _IOR('a','b',int32_t*)
+#define WR_VALUE _IOW(MAJOR_NUMBER, 0,int32_t*)     
+#define RD_VALUE _IOR(MAJOR_NUMBER, 1,int32_t*) 
 
 static char receive[BUFFER_LENGTH];     // The receive buffer from the LKM
 static char stringToSend[BUFFER_LENGTH];
