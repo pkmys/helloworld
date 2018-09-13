@@ -16,11 +16,11 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <string.h>
-#include <stdint.h>
+#include <inttypes.h>
 #include <sys/ioctl.h>
 #include <stdlib.h>
-#include<unistd.h>
-#include<fcntl.h>
+#include <unistd.h>
+#include <fcntl.h>
 
 #define BUFFER_LENGTH 256               // The buffer length (crude but fine) 
 #define WR_VALUE _IOW('a','a',int32_t*)
@@ -35,7 +35,7 @@ int testrdwr(int fd)
 
     printf("Type in a short string to send to the kernel module:\n");
     fflush(stdin);
-    scanf("%[^\n]%*c", stringToSend);                // Read in a string (with spaces)
+    scanf(" %[^\n]%*c", stringToSend);                // Read in a string (with spaces)
     printf("Writing message to the device [%s].\n", stringToSend);
 
     ret = write(fd, stringToSend, strlen(stringToSend)); // Send the string to the LKM
@@ -64,12 +64,7 @@ int main(){
    int choice;
    int32_t value, number;
 
-   fd = open("testdev", O_RDWR);        // Open the device with read/write access
-   if (fd < 0){
-      perror("Failed to open the device...");
-      return errno;
-   }
-start:
+
    printf("*****************************************\n");
    printf("*                test menu              *\n");
    printf("*****************************************\n");
@@ -78,15 +73,21 @@ start:
    printf("Enter your choice\n");
   
    scanf("%d",&choice);
+    fd = open("testdev", O_RDWR);        // Open the device with read/write access
+   if (fd < 0){
+      perror("Failed to open the device...");
+      return errno;
+   }
+   
 
     switch (choice) {
-    case 1: {
+    case 1: 
         testrdwr(fd);
         break;
-    }
-    case 2: {
+    
+    case 2: 
         printf("Enter the Value to send\n");
-        scanf("%d",&number);
+        scanf("%" SCNd32, &number);
         printf("Writing Value to Driver\n");
         ioctl(fd, WR_VALUE, (int32_t*)&number); 
  
@@ -94,10 +95,9 @@ start:
         ioctl(fd, RD_VALUE, (int32_t*)&value);
         printf("Value is %d\n", value);     
         break;
-    }
+        
     default:
         printf("Wrong input\n");
-        goto start;
     }
    
    printf("End of the program\n");
