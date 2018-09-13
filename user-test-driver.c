@@ -21,14 +21,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include "test-driver.h"
 
-#define MAJOR_NUMBER 240
-#define BUFFER_LENGTH 256               // The buffer length (crude but fine) 
 #define WR_VALUE _IOW(MAJOR_NUMBER, 0,int32_t*)     
 #define RD_VALUE _IOR(MAJOR_NUMBER, 1,int32_t*) 
 
-static char receive[BUFFER_LENGTH];     // The receive buffer from the LKM
-static char stringToSend[BUFFER_LENGTH];
+static char buffer[BUFFER_LENGTH];     // The buffer buffer from the LKM
 
 int testrdwr(int fd)
 {
@@ -36,10 +34,10 @@ int testrdwr(int fd)
 
     printf("Type in a short string to send to the kernel module:\n");
     fflush(stdin);
-    scanf(" %[^\n]%*c", stringToSend);                // Read in a string (with spaces)
-    printf("Writing message to the device [%s].\n", stringToSend);
+    scanf(" %[^\n]%*c", buffer);                // Read in a string (with spaces)
+    printf("Writing message to the device [%s].\n", buffer);
 
-    ret = write(fd, stringToSend, strlen(stringToSend)); // Send the string to the LKM
+    ret = write(fd, buffer, strlen(buffer)); // Send the string to the LKM
     if (ret < 0){
         perror("Failed to write the message to the device.");
         return errno;
@@ -49,13 +47,13 @@ int testrdwr(int fd)
     getchar();
 
     printf("Reading from the device...\n");
-    ret = read(fd, receive, BUFFER_LENGTH);       // Read the response from the LKM
+    ret = read(fd, buffer, BUFFER_LENGTH);       // Read the response from the LKM
     if (ret < 0){
         perror("Failed to read the message from the device.");
         return errno;
     }
 
-    printf("The received message is: [%s]\n", receive);
+    printf("The bufferd message is: [%s]\n", buffer);
     return 0;
 }
  

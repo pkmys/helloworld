@@ -21,15 +21,7 @@
 #include <linux/fs.h>           // Header for the Linux file system support
 #include <linux/uaccess.h>      // Required for the copy to user function
 #include <linux/ioctl.h>		// For ioctl support
-
-
-
-#define DEVICE_NAME "testdev"   // The device will appear at /dev/testdev using this message
-#define CLASS_NAME  "test"      // The device class -- this is a character device driver
-#define MOD_AUTHOR "Pawan Kumar <jmppawanhit@gmail.com>"
-#define MOD_DESC "Hello world driver"
-#define MOD_SUPPORT "test device"
-#define MAJOR_NUMBER 240
+#include "test-driver.h"
 
 /*******************************************
  *                modinfo                  *
@@ -45,10 +37,12 @@ MODULE_SUPPORTED_DEVICE(MOD_SUPPORT);   // devices this module uses
  *                 global                  *
  *******************************************/
 
-static char   message[1023];                // Memory for the string that is passed from userspace
+static char   message[BUFFER_LENGTH];       // Memory for the string that is passed from userspace
 static short  sizeOfMessage;                // Used to remember the size of the string stored
 static int    lock;                         // Counts the number of times the device is opened
 static int32_t mode;
+
+
 #define WR_VALUE _IOW(MAJOR_NUMBER, 0,int32_t*)     // #define "IOCTL_NAME" __IOX("magic number","command number","argument type")
 #define RD_VALUE _IOR(MAJOR_NUMBER, 1,int32_t*)     // refer: https://embetronicx.com/tutorials/linux/device-drivers/ioctl-tutorial-in-linux/
 /*  optional for creating the device file  
