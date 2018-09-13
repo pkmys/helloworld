@@ -20,10 +20,10 @@
 #include <sys/ioctl.h>
 #include "test-driver.h"
 
-#define WR_VALUE _IOW(MAJOR_NUMBER, 0,int32_t*)     
-#define RD_VALUE _IOR(MAJOR_NUMBER, 1,int32_t*) 
+#define WR_VALUE _IOW(MAJOR_NUMBER, 0, int32_t *)
+#define RD_VALUE _IOR(MAJOR_NUMBER, 1, int32_t *)
 
-static char buffer[BUFFER_LENGTH];     // The buffer buffer from the LKM
+static char buffer[BUFFER_LENGTH]; // The buffer buffer from the LKM
 
 int testrdwr(int fd)
 {
@@ -31,11 +31,12 @@ int testrdwr(int fd)
 
     printf("Type in a short string to send to the kernel module:\n");
     fflush(stdin);
-    scanf(" %[^\n]%*c", buffer);                // Read in a string (with spaces)
+    scanf(" %[^\n]%*c", buffer); // Read in a string (with spaces)
     printf("Writing message to the device [%s].\n", buffer);
 
     ret = write(fd, buffer, strlen(buffer)); // Send the string to the LKM
-    if (ret < 0){
+    if (ret < 0)
+    {
         perror("Failed to write the message to the device.");
         return errno;
     }
@@ -44,8 +45,9 @@ int testrdwr(int fd)
     getchar();
 
     printf("Reading from the device...\n");
-    ret = read(fd, buffer, BUFFER_LENGTH);       // Read the response from the LKM
-    if (ret < 0){
+    ret = read(fd, buffer, BUFFER_LENGTH); // Read the response from the LKM
+    if (ret < 0)
+    {
         perror("Failed to read the message from the device.");
         return errno;
     }
@@ -53,50 +55,51 @@ int testrdwr(int fd)
     printf("The bufferd message is: [%s]\n", buffer);
     return 0;
 }
- 
-int main(){
 
-   int fd;
-   int choice;
-   int32_t value, number;
+int main()
+{
 
+    int fd;
+    int choice;
+    int32_t value, number;
 
-   printf("*****************************************\n");
-   printf("*                test menu              *\n");
-   printf("*****************************************\n");
-   printf("1. Test device read-write\n");
-   printf("2. Test ioctl operation\n");
-   printf("Enter your choice\n");
-  
-   scanf("%d",&choice);
-    fd = open("testdev", O_RDWR);        // Open the device with read/write access
-   if (fd < 0){
-      perror("Failed to open the device...");
-      return errno;
-   }
-   
+    printf("*****************************************\n");
+    printf("*                test menu              *\n");
+    printf("*****************************************\n");
+    printf("1. Test device read-write\n");
+    printf("2. Test ioctl operation\n");
+    printf("Enter your choice\n");
 
-    switch (choice) {
-    case 1: 
+    scanf("%d", &choice);
+    fd = open("testdev", O_RDWR); // Open the device with read/write access
+    if (fd < 0)
+    {
+        perror("Failed to open the device...");
+        return errno;
+    }
+
+    switch (choice)
+    {
+    case 1:
         testrdwr(fd);
         break;
-    
-    case 2: 
+
+    case 2:
         printf("Enter the Value to send\n");
         scanf("%" SCNd32, &number);
         printf("Writing Value to Driver\n");
-        ioctl(fd, WR_VALUE, (int32_t*)&number); 
- 
+        ioctl(fd, WR_VALUE, (int32_t *)&number);
+
         printf("Reading Value from Driver\n");
-        ioctl(fd, RD_VALUE, (int32_t*)&value);
-        printf("Value is %d\n", value);     
+        ioctl(fd, RD_VALUE, (int32_t *)&value);
+        printf("Value is %d\n", value);
         break;
-        
+
     default:
         printf("Wrong input\n");
     }
-   
-   printf("End of the program\n");
-   close(fd);
-   return 0;
+
+    printf("End of the program\n");
+    close(fd);
+    return 0;
 }
