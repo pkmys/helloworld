@@ -18,9 +18,6 @@
 #include <string.h>
 #include <inttypes.h>
 #include <sys/ioctl.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
 #include "test-driver.h"
 
 #define WR_VALUE _IOW(MAJOR_NUMBER, 0,int32_t*)     
