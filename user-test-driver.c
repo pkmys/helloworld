@@ -25,6 +25,20 @@
 
 static char buffer[BUFFER_LENGTH]; // The buffer buffer from the LKM
 
+int16_t reads( const char* prompt, char * buff, uint16_t len )
+{
+        int idx = 0;
+        char c;
+        if( buff == NULL ) return -1;
+        memset(buff, 0, len);
+        printf(prompt);
+        while( (c = getchar() )!= '\n' && idx < len )
+        {
+                buff[idx++] = c;
+        }
+return idx;
+}
+
 int testrdwr(int fd)
 {
     int ret;
