@@ -25,18 +25,19 @@
 
 static char buffer[BUFFER_LENGTH]; // The buffer buffer from the LKM
 
-int16_t reads( const char* prompt, char * buff, uint16_t len )
+int16_t reads(const char *prompt, char *buff, uint16_t len)
 {
-        int idx = 0;
-        char c;
-        if( buff == NULL ) return -1;
-        memset(buff, 0, len);
-        printf(prompt);
-        while( (c = getchar() )!= '\n' && idx < len )
-        {
-                buff[idx++] = c;
-        }
-return idx;
+    int idx = 0;
+    char c;
+    if (buff == NULL)
+        return -1;
+    memset(buff, 0, len);
+    printf(prompt);
+    while ((c = getchar()) != '\n' && idx < len)
+    {
+        buff[idx++] = c;
+    }
+    return idx;
 }
 
 int testrdwr(int fd)
@@ -103,6 +104,11 @@ int main()
         scanf("%" SCNd32, &number);
         printf("Writing Value to Driver\n");
         ioctl(fd, WR_VALUE, (int32_t *)&number);
+
+        printf("Press ENTER to read back from the driver...\n");
+        while (getchar() != '\n')
+            ;
+        getchar();
 
         printf("Reading Value from Driver\n");
         ioctl(fd, RD_VALUE, (int32_t *)&value);

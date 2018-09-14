@@ -7,7 +7,7 @@
  *               demonstration code for implementation of character driver in
  *               kernel module.
  *               for more detail on hello world module refer master branch
- * @Copyright: Copyright (C) 2018
+ * @Copyright: Copyright (C) 2018 pkmys@github.com
  */
 
 /******************************************
